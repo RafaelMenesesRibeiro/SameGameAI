@@ -12,3 +12,12 @@ class Color:
 
     def is_empty(self):
         return self.__color == 0
+
+    @staticmethod
+    def no_color(c):
+        return c == 0
+
+    @staticmethod
+    def color(c):
+        return c > 0
+
