@@ -21,3 +21,6 @@ class Color:
     def color(c):
         return c > 0
 
+    @staticmethod
+    def equal_colors(c1, c2):
+        return c1 == c2
