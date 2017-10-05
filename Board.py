@@ -1,17 +1,15 @@
-from pandas import *
-
 class Board:
-    __colors = 0
+    __colorsNumber = 0
     __lines = 0
     __filledLines = 0
     __columns = 0
     __filledColumns = 0
     __boardMatrix = []
 
-    def __init__(self, lines, columns, colors):
+    def __init__(self, lines, columns, colorsnumber):
         self.__lines = lines
         self.__columns = columns
-        self.__colors = colors
+        self.__colorsNumber = colorsnumber
 
     def get_board(self):
         return self.__boardMatrix
@@ -22,8 +20,8 @@ class Board:
     def get_lines(self):
         return self.__lines
 
-    def get_colors(self):
-        return self.__colors
+    def get_colors_number(self):
+        return self.__colorsNumber
 
     def get_filled_lines(self):
         return self.__filledLines
@@ -42,6 +40,10 @@ class Board:
         pass
 
     def board_remove_group(self, group):
+        # TODO
+        pass
+
+    def populate_board(self):
         # TODO
         pass
 
