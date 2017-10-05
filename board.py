@@ -75,7 +75,7 @@ class Board:
                 ''' If we changed one column to the left (cluster as positions ordered in descending order of column value
                 ' then we go back one column and start deleting balls, letting the ones above fall.
                 '''
-                currentcolumn = currentcolumn - 1
+                currentcolumn = currentcolumn + 1
                 while True:
                     ''' If we would go out of bounds during ball replacement, then we just delete the position we are at.'
                     ' If currentline-maxshifts is a valid board line, then we make a replacement as expected.
