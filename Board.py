@@ -118,6 +118,3 @@ class Board:
             for c in self.__boardMatrix[l]:
                 print(self.__boardMatrix[l][c], end=' ')
         print('\nDone')
-
-
-
