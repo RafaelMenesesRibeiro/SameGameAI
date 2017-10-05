@@ -6,3 +6,6 @@ class Group:
 
     def add_pos(self, pos):
         self.__cluster.append(pos)
+
+    def get_cluster(self):
+        return self.__cluster
