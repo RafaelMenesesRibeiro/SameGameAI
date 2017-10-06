@@ -50,6 +50,41 @@ class Board:
 		# TODO
 		pass
 
+    def column_remove_holes(self, boardcopy, cluster, clusterInd):
+        boardLines = self.__lines
+        displacementVertical = 0
+        clusterIndex = clusterInd
+        currentColumn = cluster[clusterIndex].get_column()
+        #For each line lowers it to the lowest empty space in the same column.
+        for currentLine in range(boardLines):
+            #Checks if there is even more holes. OutOfBounds exception would
+            #occour otherwise.
+            #Checks if the current position is empty.
+            if clusterIndex < len(cluster) and currentLine == cluster[clusterIndex].get_line() and currentColumn == cluster[clusterIndex].get_column():
+                #If it is, increments the vertical displacement counter(so the 
+                #pieces aboves it get lowered the same amount as there are 
+                #holes beneath them) and the clusterIndex variable, because the
+                #hole above (not necessarily immediately above, and not necessarily
+                #existant), will have the coordinates of the next position in the 
+                #removed cluster list (because the list is ordered by column
+                #(from right to left) and by line (from the bottom to the top).
+                displacementVertical += 1
+                clusterIndex += 1
+            #If it's not empty, it's a valid game piece.
+            else:
+                #Checks if the game piece has holes beneath it (represented by
+                #the displacementVertical variable that is incremented each time
+                #a hole in the column is found starting at the bottom, so if
+                #holes were found, they are beneath the current piece.)
+                if displacementVertical > 0:
+                    #If there is, lowers the piece the same amount of columns as
+                    #there are holes beneath it.
+                    currentPiece = boardcopy[currentLine][currentColumn]
+                    boardcopy[currentLine + displacementVertical][currentColumn] = currentPiece
+                else:
+                    continue #If there isn't, continue.
+        return clusterIndex, boardcopy
+
 	def board_remove_group(self, group):
 		boardcopy = []
 		for line in self.__boardMatrix:
@@ -63,48 +98,6 @@ class Board:
 		while clusterIndex < len(cluster):
 			clusterIndex, boardcopy = column_remove_holes(boardcopy, cluster, clusterIndex)
 		return boardcopy
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-	#THE CLUSTER VECTOR NEEDS TO BE ORDERED FROM RIGHT TO LEFT AND BOTTOM UP
-	#CONSIDERING THE TOP LEFT CORNER IS (0, 0).
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-	def column_remove_holes(self, boardcopy, cluster, clusterInd):
-		boardLines = self.__lines
-		displacementVertical = 0
-		clusterIndex = clusterInd
-		currentColumn = cluster[clusterIndex].get_column()
-		#For each line lowers it to the lowest empty space in the same column.
-		for currentLine in range(boardLines):
-			#Checks if there is even more holes. OutOfBounds exception would
-			#occour otherwise.
-			#Checks if the current position is empty.
-			if clusterIndex < clusterLen and currentLine == cluster[clusterIndex].get_line() and currentColumn == cluster[clusterIndex].get_column():
-				#If it is, increments the vertical displacement counter(so the 
-				#pieces aboves it get lowered the same amount as there are 
-				#holes beneath them) and the clusterIndex variable, because the
-				#hole above (not necessarily immediately above, and not necessarily
-				#existant), will have the coordinates of the next position in the 
-				#removed cluster list (because the list is ordered by column
-				#(from right to left) and by line (from the bottom to the top).
-				displacementVertical += 1
-				clusterIndex += 1
-			#If it's not empty, it's a valid game piece.
-			else:
-				#Checks if the game piece has holes beneath it (represented by
-				#the displacementVertical variable that is incremented each time
-				#a hole in the column is found starting at the bottom, so if
-				#holes were found, they are beneath the current piece.)
-				if displacementVertical > 0:
-					#If there is, lowers the piece the same amount of columns as
-					#there are holes beneath it.
-					currentPiece = boardcopy[currentLine][currentColumn]
-					boardcopy[currentLine + displacementVertical][currentColumn] = currentPiece
-				else:
-					continue #If there isn't, continue.
-		return clusterIndex, boardcopy
 
 	def to_string(self):
 		print('Printing SameGame board with ', self.__lines, 'and ', self.__columns, '...')
