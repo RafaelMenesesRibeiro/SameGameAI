@@ -57,7 +57,7 @@ class Board:
 		cluster = group().get_cluster()
 		#Sorts the cluster by column, from rigth to left, and then by line,
 		#from top to bottom.
-		cluster.sort(key=itemgetter(2, 1), reverse=True)
+		cluster.sort(key=itemgetter(1, 0), reverse=True)
 
 		clusterIndex = 0
 		while clusterIndex < len(cluster):
