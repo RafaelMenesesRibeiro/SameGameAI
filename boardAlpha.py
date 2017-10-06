@@ -76,7 +76,6 @@ class Board:
 		displacementVertical = 0
 		clusterIndex = clusterInd
 		currentColumn = cluster[clusterIndex].get_column()
-
 		#For each line lowers it to the lowest empty space in the same column.
 		for currentLine in range(boardLines):
 			#Checks if there is even more holes. OutOfBounds exception would
@@ -92,8 +91,6 @@ class Board:
 				#(from right to left) and by line (from the bottom to the top).
 				displacementVertical += 1
 				clusterIndex += 1
-				continue
-
 			#If it's not empty, it's a valid game piece.
 			else:
 				#Checks if the game piece has holes beneath it (represented by
@@ -105,10 +102,8 @@ class Board:
 					#there are holes beneath it.
 					currentPiece = boardcopy[currentLine][currentColumn]
 					boardcopy[currentLine + displacementVertical][currentColumn] = currentPiece
-					pass
 				else:
-					#If there isn't, continue.
-					continue		
+					continue #If there isn't, continue.
 		return clusterIndex, boardcopy
 
 	def to_string(self):
