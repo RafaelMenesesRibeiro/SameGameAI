@@ -12,6 +12,7 @@ class Board:
         self.__lines = lines
         self.__columns = columns
         self.__colorsNumber = colorsnumber
+        self.populate_board()
 
     def get_board(self):
         return self.__boardMatrix
