@@ -81,7 +81,7 @@ class Board:
         queue = [(rootline, rootcolumn)]
         # Gets the root color so it doens't need to access the matrix even more
         # times.
-        rootColor = board[rootline][rootcolumn]
+        rootcolor = board[rootline][rootcolumn]
         while len(queue) > 0:
             # Removes a piece from the list.
             nextposition = queue.pop()
@@ -89,25 +89,25 @@ class Board:
             line = nextposition[0]
             column = nextposition[1]
             # Gets the adjacent coordinates of the current one.
-            adjacentballs = get_adjacent_coordinates(line, column)
+            adjacentballs = self.get_adjacent_coordinates(line, column)
             # For each adjacent coordinate checks if it meets the requirements
             # to be added to the cluster.
             for pos in adjacentballs:
                 # Gets the adjacent coordinates.
-                l = pos[0]
-                c = pos[1]
+                line = pos[0]
+                column = pos[1]
                 # Checks if the coordinate is not empty.
                 # If it is not, checks if the coordinate's piece is the same
                 # color as the root piece.
-                if visited[l][c] == False and board[l][c] == rootColor:
+                if not visited[line][column] and board[line][column] == rootcolor:
                     # In case the requirements are met, adds the adjacent piece
                     # to the cluster and to the queue, so its adjacent pieces
                     # can be added to the cluster (if the conditions are met).
-                    cluster.append((l, c))
-                    queue.append((l, c))
+                    cluster.append((line, column))
+                    queue.append((line, column))
                     # Sets the visitation flag to True so it doens't get added
                     # again.
-                    visited[l][c] = True
+                    visited[line][column] = True
                     # Returns the list of coordinates that are adjacent to each other and
                     # are the same color as the root.
         return cluster
@@ -126,10 +126,10 @@ class Board:
             for j in range(columns):
                 # Checks if the current position in empty and if it is, checks
                 # if the position was already visited (in a previous BFS).
-                if self.__boardMatrix[i][j] != 0 and visited[i][j] == False:
+                if self.__boardMatrix[i][j] != 0 and not visited[i][j]:
                     # Gets the cluster of which the ball in the current position
                     # belongs to.
-                    newcluster = root_find_group(visited, i, j)
+                    newcluster = self.root_find_group(visited, i, j)
                     # Adds the newly found cluster to the cluster list.
                     clusters.append(newcluster)
                     # Returns all the clusters on the board.
@@ -186,7 +186,7 @@ class Board:
 
         indexex = 0
         while indexex < len(cluster):
-            indexex, boardcopy = column_remove_holes(boardcopy, cluster, indexex)
+            indexex, boardcopy = self.column_remove_holes(boardcopy, cluster, indexex)
         return boardcopy
 
     def to_string(self):
