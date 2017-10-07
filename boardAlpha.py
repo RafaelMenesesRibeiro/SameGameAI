@@ -138,15 +138,15 @@ class Board:
     def column_remove_holes(self, boardcopy, cluster, index):
         boardlines = self.__lines
         verticaldisplacement = 0
-        clusterindex = index
-        currentcolumn = cluster[clusterindex].get_column()
+        indexex = index
+        currentcolumn = cluster[indexex].get_column()
         # For each line lowers it to the lowest empty space in the same column.
         for currentLine in reversed(range(boardlines)):
             # Checks if there is even more holes. OutOfBounds exception would
             # occour otherwise.
             # Checks if the current position is empty.
-            if clusterindex < len(cluster) and currentLine == cluster[clusterindex].get_line() and currentcolumn == \
-                    cluster[clusterindex].get_column():
+            if indexex < len(cluster) and currentLine == cluster[indexex].get_line() and currentcolumn == \
+                    cluster[indexex].get_column():
                 # If it is, increments the vertical displacement counter(so the
                 # pieces aboves it get lowered the same amount as there are
                 # holes beneath them) and the indexex variable, because the
@@ -155,7 +155,7 @@ class Board:
                 # removed cluster list (because the list is ordered by column
                 # (from right to left) and by line (from the bottom to the top).
                 verticaldisplacement += 1
-                clusterindex += 1
+                indexex += 1
                 # Sets the board value of the hole to 0.
                 boardcopy[currentLine][currentcolumn] = 0
                 # If it's not empty, it's a valid game piece.
@@ -173,7 +173,7 @@ class Board:
                     boardcopy[currentLine][currentcolumn] = 0
                 else:
                     continue  # If there isn't, continue.
-        return clusterindex, boardcopy
+        return indexex, boardcopy
 
     def board_remove_group(self, group):
         boardcopy = []
@@ -184,9 +184,9 @@ class Board:
         # from top to bottom.
         cluster.sort(key=itemgetter(1, 0), reverse=True)
 
-        clusterindex = 0
-        while clusterindex < len(cluster):
-            clusterindex, boardcopy = self.column_remove_holes(boardcopy, cluster, clusterindex)
+        indexex = 0
+        while indexex < len(cluster):
+            indexex, boardcopy = self.column_remove_holes(boardcopy, cluster, indexex)
         return boardcopy
 
     def to_string(self):
