@@ -58,15 +58,17 @@ class Board:
 		rightBorder = this.__columns - 1
 		#For each adjacent coordiante, chacks if it is valid.
 		for adj in [(line-1, column), (line+1, column), (line, column-1), (line, column+1)]:
-			if adj[1] < bottomBorder and adj[1] > topBorder and adj[0] < rigthBorder and adj[0] > leftBorder:
+			if adj[1] < bottomBorder and adj[1] >= topBorder and adj[0] < rightBorder and adj[0] >= leftBorder:
 				#If it is inside the board, adds it to the list.
 				adjacent.append(adj)
 		#Returns the list of adjacent valid coordinates.
 		return adjacent
 
-	#Traverses the matrix as a BFS to find all the adjacent pieces with the same
+	#Traverses the matrix as a DFS to find all the adjacent pieces with the same
 	#color as the root in the board, starting in the given root's coordinates.
 	def root_find_group(self, visited, rootLine, rootColumn):
+		#Marks the root piece as visited.
+		visited[rootLine][rootColumn] = True
 		#Gets a reference to the matrix to check the colors of the adjacent
 		#pieces.
 		board = this.__boardMatrix
@@ -94,7 +96,7 @@ class Board:
 				#Checks if the coordinate is not empty.
 				#If it is not, checks if the coordinate's piece is the same
 				#color as the root piece.
-				if visited[l][c] == False and board[l][c] == rootColor
+				if visited[l][c] == False and board[l][c] == rootColor:
 					#In case the requirements are met, adds the adjacent piece
 					#to the cluster and to the queue, so its adjacent pieces
 					#can be added to the cluster (if the conditions are met).
@@ -127,7 +129,8 @@ class Board:
 					newCluster = root_find_group(visited, i, j)
 					#Adds the newly found cluster to the cluster list.
 					clusters.append(newCluster)
-		return 
+		#Returns all the clusters on the board.
+		return clusters
 
 	def column_remove_holes(self, boardcopy, cluster, clusterInd):
 		boardLines = self.__lines
@@ -135,7 +138,7 @@ class Board:
 		clusterIndex = clusterInd
 		currentColumn = cluster[clusterIndex].get_column()
 		#For each line lowers it to the lowest empty space in the same column.
-		for currentLine in range(boardLines):
+		for currentLine in reversed(range(boardLines)):
 			#Checks if there is even more holes. OutOfBounds exception would
 			#occour otherwise.
 			#Checks if the current position is empty.
@@ -149,6 +152,8 @@ class Board:
 				#(from right to left) and by line (from the bottom to the top).
 				displacementVertical += 1
 				clusterIndex += 1
+				#Sets the board value of the hole to 0.
+				boardcopy[currentLine][currentColumn] = 0
 			#If it's not empty, it's a valid game piece.
 			else:
 				#Checks if the game piece has holes beneath it (represented by
@@ -160,6 +165,8 @@ class Board:
 					#there are holes beneath it.
 					currentPiece = boardcopy[currentLine][currentColumn]
 					boardcopy[currentLine + displacementVertical][currentColumn] = currentPiece
+					#Sets the value of the fallen piece to 0.
+					boardcopy[currentLine][currentColumn] = 0
 				else:
 					continue #If there isn't, continue.
 		return clusterIndex, boardcopy
