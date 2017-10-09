@@ -253,7 +253,7 @@ class same_game(Problem):
         is such that the path doesn't matter, this function will only look at
         state2.  If the path does matter, it will consider c and maybe state1
         and action. The default method costs 1 for every step in the path.'''
-        pass
+        return c + 1
 
     def h(self, node):
         #Needed for informed search.
