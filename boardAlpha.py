@@ -34,6 +34,13 @@ class Board:
                 self.__boardMatrix[l][c] = color
         print('Done')
 
+    def is_empty(self):
+        for l in range(self.__columns):
+            for c in range(self.__lines):
+                if self.__boardMatrix[l][c] != 0:
+                    return False
+        return True
+
     # Calculates the adjacent coordinates to the given root (line, column).
     # Only returns the ones that are valid (inside the board).
 
