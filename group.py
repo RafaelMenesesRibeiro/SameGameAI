@@ -9,3 +9,6 @@ class Group:
 
     def get_cluster(self):
         return self.__cluster
+
+    def is_valid_action(self):
+    	return len(self.__cluster) >= 2
