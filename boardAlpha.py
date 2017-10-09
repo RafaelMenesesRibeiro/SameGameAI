@@ -218,9 +218,9 @@ class same_game(Problem):
         clusters = board.board_find_groups()
         #Trims the clusters to only consider groups of 2 or more pieces.
         validclusters = []
-        for i, cluster in enumerate(cluster):
-            if len(cluster) >= 2:
-                validclusters.append(cluster)
+        for cluster in cluster:
+            if cluster.is_valid_action():
+                validclusters.append(cluster)               
         return validclusters
 
     '''Return the state that results from executing the given
