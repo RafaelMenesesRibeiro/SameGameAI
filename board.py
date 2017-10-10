@@ -17,15 +17,6 @@ class Board:
     def get_board(self):
         return self.__boardMatrix
 
-    def get_columns(self):
-        return self.__columns
-
-    def get_lines(self):
-        return self.__lines
-
-    def get_colors_number(self):
-        return self.__colorsNumber
-
     def populate_board(self):
         for l in range(self.__columns):
             line = []
