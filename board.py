@@ -77,11 +77,6 @@ class Board:
             # Gets the board coordinates of the piece.
             line = nextposition[0]
             column = nextposition[1]
-
-
-
-            #print('rootLine {}, rootcolumn {}, current pos {} {}'.format(rootline, rootcolumn, line, column))
-
             # Gets the adjacent coordinates of the current one.
             adjacentballs = self.get_adjacent_coordinates(line, column)
             # For each adjacent coordinate checks if it meets the requirements
@@ -121,7 +116,6 @@ class Board:
                 # Checks if the current position in empty and if it is, checks
                 # if the position was already visited (in a previous BFS).
                 if self.__boardMatrix[i][j] != 0 and not visited[i][j]:
-                    #print('CALLING ROOT FIND WITH {} {}'.format(i, j))
                     # Gets the cluster of which the ball in the current position
                     # belongs to.
                     newcluster = self.root_find_group(visited, i, j)
