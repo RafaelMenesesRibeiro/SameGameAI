@@ -2,6 +2,47 @@ from operator import itemgetter
 import random
 import search
 
+#------------------------------------------------------------------------------#
+#
+#            ADT Position
+#
+# -----------------------------------------------------------------------------#
+def make_pos(l, c):
+    if not (isinstance(l, int) and l > 0 and isinstance(c, int) and c > 0):
+        raise ValueError("new_position: invalid arguments")
+    return (l, c)
+
+def is_pos(p):
+    if isinstance(p, tuple) and len(p) == 2 \
+        and isinstance(p[0], int) and p[0] >= 0 \
+        and isinstance(p[1], int) and p[1] >= 0:
+        return True
+    return False
+
+def pos_l(p):
+    if is_pos(p):
+        return p[0]
+    return -1
+
+def pos_c(p):
+    if is_pos(p):
+        return p[1]
+    return -1
+
+def pos_color(board, p):
+    if is_pos(p):
+        return board[pos_l(p)][pos_c(p)]
+
+def eq_pos(p1, p2):
+    if is_pos(p1) and is_pos(p2) and pos_l(p1) == pos_l(p2) and pos_c(p1) == pos_c(p2):
+        return True
+    return False
+
+#------------------------------------------------------------------------------#
+#
+#            Class Board
+#
+# -----------------------------------------------------------------------------#
 class Board:
     __colorsNumber = 0
     __lines = 0
@@ -49,7 +90,7 @@ class Board:
         rightborder = self.__columns - 1
         # For each adjacent coordiante, chacks if it is valid.
         for adj in [(line - 1, column), (line + 1, column), (line, column - 1), (line, column + 1)]:
-            if bottomborder >= adj[1] >= topborder and rightborder >= adj[0] >= leftborder:
+            if bottomborder >= pos_c(adj) >= topborder and rightborder >= pos_l(adj) >= leftborder:
                 # If it is inside the board, adds it to the list.
                 adjacent.append(adj)
             # Returns the list of adjacent valid coordinates.
@@ -75,16 +116,16 @@ class Board:
             # Removes a piece from the list.
             nextposition = queue.pop()
             # Gets the board coordinates of the piece.
-            line = nextposition[0]
-            column = nextposition[1]
+            line = pos_l(nextposition)
+            column = pos_c(nextposition)
             # Gets the adjacent coordinates of the current one.
             adjacentballs = self.get_adjacent_coordinates(line, column)
             # For each adjacent coordinate checks if it meets the requirements
             # to be added to the cluster.
             for pos in adjacentballs:
                 # Gets the adjacent coordinates.
-                line = pos[0]
-                column = pos[1]
+                line = pos_l(pos)
+                column = pos_c(pos)
                 # Checks if the coordinate is not empty.
                 # If it is not, checks if the coordinate's piece is the same
                 # color as the root piece.
@@ -128,13 +169,13 @@ class Board:
         maxlines = self.__lines
         verticaldisplacement = 0
         clusterindex = index
-        column = cluster[clusterindex][1]
+        column = pos_c(cluster[clusterindex])
         # For each line lowers it to the lowest empty space in the same column.
         for line in reversed(range(maxlines)):
             # Checks if there are more holes. OutOfBounds exception would occour otherwise.
             # Checks if the current position is empty.
-            if clusterindex < len(cluster) and line == cluster[clusterindex][0] and column == \
-                    cluster[clusterindex][1]:
+            if clusterindex < len(cluster) \
+                and line == pos_l(cluster[clusterindex]) and column == pos_c(cluster[clusterindex]):
                 ''' Increments the vertical displacement counter, so the pieces above it get lowered by as many holes as
                 there are beneath them. The clusterindex variable also updates because the next hole will have the
                 coordinates of the next position in the removed cluster list. At the same time it sets the current
