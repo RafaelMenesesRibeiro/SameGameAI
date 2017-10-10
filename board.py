@@ -25,12 +25,15 @@ class Board:
                 line.append(color)
             self.__boardMatrix.append(line)
 
+    def is_column_empty(self, columnnumber):
+        if self.__boardMatrix[self.__lines - 1][columnnumber] == 0:
+            return True
+        return False
 
     def is_empty(self):
-        for l in range(self.__columns):
-            for c in range(self.__lines):
-                if self.__boardMatrix[l][c] != 0:
-                    return False
+        for column in range(self.__columns):
+            if not self.is_column_empty(column):
+                return False
         return True
 
     # Calculates the adjacent coordinates to the given root (line, column).
