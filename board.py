@@ -4,11 +4,46 @@ import search
 
 #------------------------------------------------------------------------------#
 #
+#            ADT Color
+#
+# -----------------------------------------------------------------------------#
+def is_color(c):
+    if isinstance(c, int):
+        return True
+    return False
+
+def make_color(colorsnumber):
+    return random.randint(1, colorsnumber)
+
+def get_color(board, line, column):
+    return board[line][column]
+
+def set_color(board, line, column, newcolor):
+    p = make_pos(line, column)
+    if is_pos(p) and is_color(newcolor):
+        board[pos_l(p)][pos_c(p)] = newcolor
+        
+def get_no_color():
+    return 0
+
+def no_color(c):
+    return c == 0
+
+def color(c):
+    return c > 0
+
+def eq_colors(c1, c2):
+    if is_color(c1) and is_color(c2):
+        return c1 == c2
+    return False
+
+#------------------------------------------------------------------------------#
+#
 #            ADT Position
 #
 # -----------------------------------------------------------------------------#
 def make_pos(l, c):
-    if not (isinstance(l, int) and l > 0 and isinstance(c, int) and c > 0):
+    if not (isinstance(l, int) and l >= 0 and isinstance(c, int) and c >= 0):
         raise ValueError("new_position: invalid arguments")
     return (l, c)
 
@@ -53,7 +88,8 @@ class Board:
         self.__lines = lines
         self.__columns = columns
         self.__colorsNumber = colorsnumber
-        self.populate_board()
+        self.__boardMatrix = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
+        #self.populate_board()
 
     def get_board(self):
         return self.__boardMatrix
@@ -62,12 +98,12 @@ class Board:
         for l in range(self.__columns):
             line = []
             for c in range(self.__lines):
-                color = random.randint(1, self.__colorsNumber)
+                color = make_color(self.__colorsNumber)
                 line.append(color)
             self.__boardMatrix.append(line)
 
     def is_column_empty(self, columnnumber):
-        if self.__boardMatrix[self.__lines - 1][columnnumber] == 0:
+        if no_color(self.__boardMatrix[self.__lines - 1][columnnumber]):
             return True
         return False
 
@@ -111,7 +147,7 @@ class Board:
         queue = [(rootline, rootcolumn)]
         # Gets the root color so it doens't need to access the matrix even more
         # times.
-        rootcolor = board[rootline][rootcolumn]
+        rootcolor = get_color(board, rootline, rootcolumn)
         while len(queue) > 0:
             # Removes a piece from the list.
             nextposition = queue.pop()
@@ -129,7 +165,7 @@ class Board:
                 # Checks if the coordinate is not empty.
                 # If it is not, checks if the coordinate's piece is the same
                 # color as the root piece.
-                if not visited[line][column] and board[line][column] == rootcolor:
+                if not visited[line][column] and eq_colors(rootcolor, get_color(board, line, column)):
                     # In case the requirements are met, adds the adjacent piece
                     # to the cluster and to the queue, so its adjacent pieces
                     # can be added to the cluster (if the conditions are met).
@@ -156,7 +192,7 @@ class Board:
             for j in range(columns):
                 # Checks if the current position in empty and if it is, checks
                 # if the position was already visited (in a previous BFS).
-                if self.__boardMatrix[i][j] != 0 and not visited[i][j]:
+                if color(get_color(self.__boardMatrix, i, j)) and not visited[i][j]:
                     # Gets the cluster of which the ball in the current position
                     # belongs to.
                     newcluster = self.root_find_group(visited, i, j)
@@ -182,12 +218,12 @@ class Board:
                 position to 0. '''
                 verticaldisplacement += 1
                 clusterindex += 1
-                boardcopy[line][column] = 0
+                set_color(boardcopy, line, column, get_no_color())
             elif verticaldisplacement > 0:
                 '''If the current game piece has holes beneath it, represented by the verticaldisplacement variable,
                 then it lowers that piece the same amount of lines. Setting the value of the current piece to zero.'''
-                boardcopy[line + verticaldisplacement][column] = boardcopy[line][column]
-                boardcopy[line][column] = 0
+                set_color(boardcopy, line + verticaldisplacement, column, get_color(boardcopy, line, column))
+                set_color(boardcopy, line, column, get_no_color())
         return clusterindex, boardcopy
 
     def concatenate_columns(self, boardcopy):
