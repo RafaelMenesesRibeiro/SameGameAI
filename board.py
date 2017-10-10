@@ -125,15 +125,15 @@ class Board:
         return clusters
 
     def concatenate_lines(self, boardcopy, cluster, index):
-        boardlines = self.__lines
+        maxlines = self.__lines
         verticaldisplacement = 0
         clusterindex = index
-        currentcolumn = cluster[clusterindex][1]
+        column = cluster[clusterindex][1]
         # For each line lowers it to the lowest empty space in the same column.
-        for currentline in reversed(range(boardlines)):
+        for line in reversed(range(maxlines)):
             # Checks if there are more holes. OutOfBounds exception would occour otherwise.
             # Checks if the current position is empty.
-            if clusterindex < len(cluster) and currentline == cluster[clusterindex][0] and currentcolumn == \
+            if clusterindex < len(cluster) and line == cluster[clusterindex][0] and column == \
                     cluster[clusterindex][1]:
                 ''' Increments the vertical displacement counter, so the pieces above it get lowered by as many holes as
                 there are beneath them. The clusterindex variable also updates because the next hole will have the
@@ -141,16 +141,12 @@ class Board:
                 position to 0. '''
                 verticaldisplacement += 1
                 clusterindex += 1
-                boardcopy[currentline][currentcolumn] = 0
-            else:
+                boardcopy[line][column] = 0
+            elif verticaldisplacement > 0:
                 '''If the current game piece has holes beneath it, represented by the verticaldisplacement variable,
                 then it lowers that piece the same amount of lines. Setting the value of the current piece to zero.'''
-                if verticaldisplacement > 0:
-                    currentpiece = boardcopy[currentline][currentcolumn]
-                    boardcopy[currentline + verticaldisplacement][currentcolumn] = currentpiece
-                    boardcopy[currentline][currentcolumn] = 0
-                else:
-                    continue
+                boardcopy[line + verticaldisplacement][column] = boardcopy[line][column]
+                boardcopy[line][column] = 0
         return clusterindex, boardcopy
 
     def concatenate_columns(self, boardcopy):
@@ -160,9 +156,7 @@ class Board:
         for column in range(maxcolumns):
             if boardcopy[maxlines - 1][column] == 0:
                 horizontaldisplacement += 1
-            else:
-                if horizontaldisplacement == 0:
-                    continue
+            elif horizontaldisplacement > 0:
                 for line in range(maxlines):
                     boardcopy[line][column - horizontaldisplacement] = boardcopy[line][column]
                     boardcopy[line][column] = 0
@@ -194,7 +188,7 @@ if __name__ == '__main__':
     board.to_string()
     clusters = board.board_find_groups()
     print(clusters)
-    group  = clusters[0]
+    group  = clusters[2]
     board2 = board.board_remove_group(group)
     print(board2)
     board.to_string()
