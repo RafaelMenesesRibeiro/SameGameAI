@@ -140,13 +140,13 @@ class Board:
         boardlines = self.__lines
         verticaldisplacement = 0
         clusterindex = index
-        currentcolumn = cluster[clusterindex].get_column()
+        currentcolumn = cluster[clusterindex][1]
         # For each line lowers it to the lowest empty space in the same column.
         for currentline in reversed(range(boardlines)):
             # Checks if there are more holes. OutOfBounds exception would occour otherwise.
             # Checks if the current position is empty.
-            if clusterindex < len(cluster) and currentline == cluster[clusterindex].get_line() and currentcolumn == \
-                    cluster[clusterindex].get_column():
+            if clusterindex < len(cluster) and currentline == cluster[clusterindex][0] and currentcolumn == \
+                    cluster[clusterindex][1]:
                 ''' Increments the vertical displacement counter, so the pieces above it get lowered by as many holes as
                 there are beneath them. The clusterindex variable also updates because the next hole will have the
                 coordinates of the next position in the removed cluster list. At the same time it sets the current
@@ -170,7 +170,7 @@ class Board:
         maxlines = self.__lines
         horizontaldisplacement = 0
         for column in range(maxcolumns):
-            if boardcopy[maxlines][column] == 0:
+            if boardcopy[maxlines - 1][column] == 0:
                 horizontaldisplacement += 1
             else:
                 if horizontaldisplacement == 0:
@@ -184,7 +184,7 @@ class Board:
         boardcopy = []
         for line in self.__boardMatrix:
             boardcopy.append(list(line))
-        cluster = group().get_cluster()
+        cluster = group
         # Sorts the cluster by column, from rigth to left, and then by line, from top to bottom.
         cluster.sort(key=itemgetter(1, 0), reverse=True)
         clusterindex = 0
@@ -202,7 +202,13 @@ class Board:
 
 
 if __name__ == '__main__':
-    board = Board(5, 5, 3)
+    board = Board(4, 4, 4)
     board.to_string()
     clusters = board.board_find_groups()
     print(clusters)
+    group  = clusters[0]
+    board2 = board.board_remove_group(group)
+    print(board2)
+    board.to_string()
+    
+
