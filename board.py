@@ -1,6 +1,5 @@
 from operator import itemgetter
 import random
-from same_game import *
 from search import *
 
 #------------------------------------------------------------------------------#
@@ -84,10 +83,17 @@ def is_column_empty(board, columnnumber):
     return False
 
 def is_empty(board):
-    for column in range(__columns):
+    global __lines
+    for line in range(__lines):
+        for column in range(__columns):
+            if board[line][column] != 0:
+                return False
+    return True
+    '''for column in range(__columns):
         if not is_column_empty(board, column):
             return False
     return True
+    '''
 
 # Calculates the adjacent coordinates to the given root (line, column).
 # Only returns the ones that are valid (inside the board).
@@ -235,16 +241,39 @@ def setLines(lines, columns):
     __lines = lines
     __columns = columns
 
+class sg_state:
+    __slots__ = ['__board']
 
+    def __init__(self, board):
+        self.__board = board
+
+    def update_board(self, newboard):
+        self.__board = newboard
+
+    def get_board(self):
+        return self.__board
+
+    def __lt__(self, other_sg_state):
+        # TODO compares another sg_state with the current one and returns true if this one is less than other
+        pass
 
 class same_game(Problem):
     #Models a Same Game problem as a satisfaction problem.
     #A solution cannot have pieces left on the board.
     def __init__(self, board):
-        setLines(len(board), len(board[1]))
-        
-        #initialstate = sg_state(board)
-        #Problem.__init__(self, initialstate)
+        lines = len(board)
+        columns = len(board[1])
+        setLines(lines, columns)
+
+        initialstate = sg_state(board)
+        emptyboard = []
+        for i in range(lines):
+            line = []
+            for j in range(columns):
+                line.append(0)
+            emptyboard.append(line)
+        goalstate = sg_state(emptyboard)
+        super(same_game, self).__init__(initialstate, goalstate)
 
     '''Return the actions that can be executed in the given
     state. The result would typically be a list, but if there are
@@ -252,13 +281,13 @@ class same_game(Problem):
     iterator, rather than building them all at once.'''
     def actions(self, state):
         #Gets the board of the state.
-        board = state.board
+        board = state.get_board()
         #Find all the clusters in the board.
-        clusters = board.board_find_groups()
+        clusters = board_find_groups(board)
         #Trims the clusters to only consider groups of 2 or more pieces.
         validclusters = []
-        for cluster in cluster:
-            if cluster.is_valid_action():
+        for cluster in clusters:
+            if len(cluster) > 2:
                 validclusters.append(cluster)               
         return validclusters
 
@@ -267,13 +296,14 @@ class same_game(Problem):
     self.actions(state).'''
     def result(self, state, action):
         #Gets the board of the state.
-        board = state.board
+        board = state.get_board()
         #Gets the cluster to be removed.
         cluster = action
         #Calculates the board that would result in completing the action in the
         #given state.
-        resultingboard = board.board_remove_group(cluster)
-        return resultingboard
+        resultingboard = board_remove_group(board, cluster)
+        newstate = sg_state(resultingboard)
+        return newstate
 
     '''Return True if the state is a goal. The default method compares the
     state to self.goal or checks for state in self.goal if it is a
@@ -281,8 +311,8 @@ class same_game(Problem):
     checking against a single self.goal is not enough.'''
     def goal_test(self, state):
         #Gets the board of the state.
-        board = state.board
-        if board.is_empty():
+        board = state.get_board()
+        if is_empty(board):
             return True
         return False
 
@@ -302,7 +332,11 @@ if __name__ == '__main__':
     #board = [[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]
     board = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
     game = same_game(board)
+    #depth_first_graph_search(game)
+    depth_first_tree_search(game)
     
+
+'''
     print(__columns)
     print(__lines)
 
@@ -313,5 +347,5 @@ if __name__ == '__main__':
     board2 = board_remove_group(board, group)
     print(board2)
     to_string(board)
-    
+''' 
 
