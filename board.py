@@ -12,15 +12,12 @@ def is_color(c):
         return True
     return False
 
-def make_color(colorsnumber):
-    return random.randint(1, colorsnumber)
-
 def get_color(board, line, column):
     return board[line][column]
 
 def set_color(board, line, column, newcolor):
     p = make_pos(line, column)
-    if is_pos(p) and is_color(newcolor):
+    if is_color(newcolor):
         board[pos_l(p)][pos_c(p)] = newcolor
         
 def get_no_color():
@@ -48,9 +45,7 @@ def make_pos(l, c):
     return (l, c)
 
 def is_pos(p):
-    if isinstance(p, tuple) and len(p) == 2 \
-        and isinstance(p[0], int) and p[0] >= 0 \
-        and isinstance(p[1], int) and p[1] >= 0:
+    if isinstance(p, tuple) and len(p) == 2 and isinstance(p[0], int) and p[0] >= 0 and isinstance(p[1], int) and p[1] >= 0:
         return True
     return False
 
@@ -89,18 +84,9 @@ class Board:
         self.__columns = columns
         self.__colorsNumber = colorsnumber
         self.__boardMatrix = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
-        #self.populate_board()
 
     def get_board(self):
         return self.__boardMatrix
-
-    def populate_board(self):
-        for l in range(self.__columns):
-            line = []
-            for c in range(self.__lines):
-                color = make_color(self.__colorsNumber)
-                line.append(color)
-            self.__boardMatrix.append(line)
 
     def is_column_empty(self, columnnumber):
         if no_color(self.__boardMatrix[self.__lines - 1][columnnumber]):
@@ -210,8 +196,7 @@ class Board:
         for line in reversed(range(maxlines)):
             # Checks if there are more holes. OutOfBounds exception would occour otherwise.
             # Checks if the current position is empty.
-            if clusterindex < len(cluster) \
-                and line == pos_l(cluster[clusterindex]) and column == pos_c(cluster[clusterindex]):
+            if clusterindex < len(cluster) and line == pos_l(cluster[clusterindex]) and column == pos_c(cluster[clusterindex]):
                 ''' Increments the vertical displacement counter, so the pieces above it get lowered by as many holes as
                 there are beneath them. The clusterindex variable also updates because the next hole will have the
                 coordinates of the next position in the removed cluster list. At the same time it sets the current
