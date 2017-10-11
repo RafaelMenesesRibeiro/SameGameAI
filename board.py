@@ -76,6 +76,7 @@ def eq_pos(p1, p2):
 
 __lines = 0
 __columns = 0
+__colorsDict = {}
 
 def is_column_empty(board, columnnumber):
     if no_color(board[__lines - 1][columnnumber]):
@@ -272,6 +273,8 @@ class same_game(Problem):
         for i in range(lines):
             line = []
             for j in range(columns):
+                color = get_color(board, i, j)
+                __colorsDict[color] += 1
                 line.append(0)
             emptyboard.append(line)
         goalstate = sg_state(emptyboard)
@@ -327,8 +330,10 @@ class same_game(Problem):
         return c + 1
 
     def h(self, node):
-        #Needed for informed search.
-        pass
+        state = node.state
+        board = state.get_board()
+        
+        return 
 
 if __name__ == '__main__':
     #board = [[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]
