@@ -1,7 +1,9 @@
 from operator import itemgetter
-import random
 from search import *
 
+__lines = 0
+__columns = 0
+colorsDict = {}
 
 #------------------------------------------------------------------------------#
 #
@@ -81,17 +83,12 @@ def eq_pos(p1, p2):
         return True
     return False
 
+
 #------------------------------------------------------------------------------#
 #
 #            ADT Board
 #
 # -----------------------------------------------------------------------------#
-
-__lines = 0
-__columns = 0
-__colorsDict = {}
-
-
 def is_column_empty(board, columnnumber):
     if no_color(board[__lines - 1][columnnumber]):
         return True
@@ -105,11 +102,6 @@ def is_empty(board):
             if board[line][column] != 0:
                 return False
     return True
-    '''for column in range(__columns):
-        if not is_column_empty(board, column):
-            return False
-    return True
-    '''
 
 
 # Calculates the adjacent coordinates to the given root (line, column).
@@ -296,6 +288,12 @@ class same_game(Problem):
         for i in range(lines):
             line = []
             for j in range(columns):
+                # RFE: All these accesses to dictionary might cause program to run slower than intended
+                colorinteger = get_color(board, i, j)
+                colorstr = str(colorinteger)
+                colorcount = colorsDict.setdefault(colorstr, 0)
+                colorsDict[colorstr] += colorcount + 1
+                line.append(0)
                 line.append(0)
             emptyboard.append(line)
         goalstate = sg_state(emptyboard)
@@ -349,17 +347,3 @@ if __name__ == '__main__':
     #board = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
     problem = same_game(board)
     depth_first_tree_search(problem)
-
-'''
-    print(__columns)
-    print(__lines)
-
-    to_string(board)
-    clusters = board_find_groups(board)
-    print(clusters)
-    group  = clusters[2]
-    board2 = board_remove_group(board, group)
-    print(board2)
-    to_string(board)
-''' 
-
