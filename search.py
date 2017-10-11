@@ -184,6 +184,15 @@ def tree_search(problem, frontier):
     frontier.append(Node(problem.initial))
     while frontier:
         node = frontier.pop()
+
+
+
+        s = node.state
+        b = s.get_board()
+        print(b)
+
+
+
         if problem.goal_test(node.state):
             return node
         frontier.extend(node.expand(problem))
