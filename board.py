@@ -2,6 +2,7 @@ from operator import itemgetter
 import random
 from search import *
 
+
 #------------------------------------------------------------------------------#
 #
 #            ADT Color
@@ -12,27 +13,34 @@ def is_color(c):
         return True
     return False
 
+
 def get_color(board, line, column):
     return board[line][column]
+
 
 def set_color(board, line, column, newcolor):
     p = make_pos(line, column)
     if is_color(newcolor):
         board[pos_l(p)][pos_c(p)] = newcolor
-        
+
+
 def get_no_color():
     return 0
+
 
 def no_color(c):
     return c == 0
 
+
 def color(c):
     return c > 0
+
 
 def eq_colors(c1, c2):
     if is_color(c1) and is_color(c2):
         return c1 == c2
     return False
+
 
 #------------------------------------------------------------------------------#
 #
@@ -44,24 +52,29 @@ def make_pos(l, c):
         raise ValueError("new_position: invalid arguments")
     return (l, c)
 
+
 def is_pos(p):
     if isinstance(p, tuple) and len(p) == 2 and isinstance(p[0], int) and p[0] >= 0 and isinstance(p[1], int) and p[1] >= 0:
         return True
     return False
+
 
 def pos_l(p):
     if is_pos(p):
         return p[0]
     return -1
 
+
 def pos_c(p):
     if is_pos(p):
         return p[1]
     return -1
 
+
 def pos_color(board, p):
     if is_pos(p):
         return board[pos_l(p)][pos_c(p)]
+
 
 def eq_pos(p1, p2):
     if is_pos(p1) and is_pos(p2) and pos_l(p1) == pos_l(p2) and pos_c(p1) == pos_c(p2):
@@ -78,10 +91,12 @@ __lines = 0
 __columns = 0
 __colorsDict = {}
 
+
 def is_column_empty(board, columnnumber):
     if no_color(board[__lines - 1][columnnumber]):
         return True
     return False
+
 
 def is_empty(board):
     global __lines
@@ -95,6 +110,7 @@ def is_empty(board):
             return False
     return True
     '''
+
 
 # Calculates the adjacent coordinates to the given root (line, column).
 # Only returns the ones that are valid (inside the board).
@@ -113,6 +129,7 @@ def get_adjacent_coordinates(line, column):
             adjacent.append(adj)
         # Returns the list of adjacent valid coordinates.
     return adjacent
+
 
 # Traverses the matrix as a DFS to find all the adjacent pieces with the same
 # color as the root in the board, starting in the given root's coordinates.
@@ -158,6 +175,7 @@ def root_find_group(board, visited, rootline, rootcolumn):
             # are the same color as the root.
     return cluster
 
+
 def board_find_groups(board):
     lines = __lines
     columns = __columns
@@ -180,6 +198,7 @@ def board_find_groups(board):
                 clusters.append(newcluster)
             # Returns all the clusters on the board.
     return clusters
+
 
 def concatenate_lines(boardcopy, cluster, index):
     maxlines = __lines
@@ -205,6 +224,7 @@ def concatenate_lines(boardcopy, cluster, index):
             set_color(boardcopy, line, column, get_no_color())
     return clusterindex, boardcopy
 
+
 def concatenate_columns(boardcopy):
     maxlines = __lines
     maxcolumns = __columns
@@ -217,6 +237,7 @@ def concatenate_columns(boardcopy):
                 boardcopy[line][column - horizontaldisplacement] = boardcopy[line][column]
                 boardcopy[line][column] = 0
     return boardcopy
+
 
 def board_remove_group(board, group):
     boardcopy = []
@@ -231,6 +252,7 @@ def board_remove_group(board, group):
     boardcopy = concatenate_columns(boardcopy)
     return boardcopy
 
+
 def to_string(board):
     for l in range(__columns):
         print('[ ', end='')
@@ -238,11 +260,13 @@ def to_string(board):
             print('{} '.format(board[l][c]), end='')
         print(']')
 
+
 def setLines(lines, columns):
     global __lines
     global __columns
     __lines = lines
     __columns = columns
+
 
 class sg_state:
     __slots__ = ['__board']
@@ -323,10 +347,8 @@ if __name__ == '__main__':
     board = [[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]
     #board = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
     #board = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
-    to_string(board)
     problem = same_game(board)
     depth_first_tree_search(problem)
-    to_string(board)
 
 '''
     print(__columns)
