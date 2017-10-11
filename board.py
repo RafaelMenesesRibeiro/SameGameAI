@@ -287,7 +287,7 @@ class same_game(Problem):
         #Trims the clusters to only consider groups of 2 or more pieces.
         validclusters = []
         for cluster in clusters:
-            if len(cluster) > 2:
+            if len(cluster) >= 2:
                 validclusters.append(cluster)               
         return validclusters
 
