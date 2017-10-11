@@ -1,9 +1,15 @@
+from search import *
+
 class same_game(Problem):
     #Models a Same Game problem as a satisfaction problem.
     #A solution cannot have pieces left on the board.
     def __init__(self, board):
-        initialstate = sg_state(board)
-        Problem.__init__(self, initialstate)
+        
+        __lines = len(board)
+        
+        __columns = len(board[1])
+        #initialstate = sg_state(board)
+        #Problem.__init__(self, initialstate)
 
     '''Return the actions that can be executed in the given
     state. The result would typically be a list, but if there are
