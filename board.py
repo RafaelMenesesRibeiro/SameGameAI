@@ -107,7 +107,7 @@ def get_adjacent_coordinates(line, column):
     rightborder = __columns - 1
     # For each adjacent coordiante, chacks if it is valid.
     for adj in [(line - 1, column), (line + 1, column), (line, column - 1), (line, column + 1)]:
-        if bottomborder >= pos_c(adj) >= topborder and rightborder >= pos_l(adj) >= leftborder:
+        if bottomborder >= pos_l(adj) >= topborder and rightborder >= pos_c(adj) >= leftborder:
             # If it is inside the board, adds it to the list.
             adjacent.append(adj)
         # Returns the list of adjacent valid coordinates.
