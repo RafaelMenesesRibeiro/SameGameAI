@@ -294,7 +294,6 @@ class same_game(Problem):
                 colorcount = colorsDict.setdefault(colorstr, 0)
                 colorsDict[colorstr] += colorcount + 1
                 line.append(0)
-                line.append(0)
             emptyboard.append(line)
         goalstate = sg_state(emptyboard)
         super(same_game, self).__init__(initialstate, goalstate)
