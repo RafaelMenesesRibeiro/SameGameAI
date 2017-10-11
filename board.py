@@ -136,12 +136,14 @@ def root_find_group(board, visited, rootline, rootcolumn):
         # For each adjacent coordinate checks if it meets the requirements
         # to be added to the cluster.
         for pos in adjacentballs:
+            
             # Gets the adjacent coordinates.
             line = pos_l(pos)
             column = pos_c(pos)
             # Checks if the coordinate is not empty.
             # If it is not, checks if the coordinate's piece is the same
             # color as the root piece.
+            
             if not visited[line][column] and eq_colors(rootcolor, get_color(board, line, column)):
                 # In case the requirements are met, adds the adjacent piece
                 # to the cluster and to the queue, so its adjacent pieces
