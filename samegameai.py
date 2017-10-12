@@ -222,10 +222,13 @@ class sg_state:
 
 
 class same_game(Problem):
+	__slots__ = ['lines', 'columns']
+
 	def __init__(self, board):
 		self.lines = len(board)
 		self.columns = len(board[1])
-
+		initialstate = sg_state(board)
+		'''
 		emptyboard = []
 		for i in range(self.lines):
 			line = []
@@ -233,7 +236,8 @@ class same_game(Problem):
 				line.append(0)
 			emptyboard.append(line)
 		goalstate = sg_state(emptyboard)
-		super(same_game, self).__init__(initialstate, goalstate)
+		'''
+		super(same_game, self).__init__(initialstate)
 
 	'''Return the actions that can be executed in the given
 	state. The result would typically be a list, but if there are
@@ -264,9 +268,16 @@ class same_game(Problem):
 	checking against a single self.goal is not enough.'''
 	def goal_test(self, state):
 		board = state.get_board()
+		lines = self.lines
+		columns = self.columns
+		if board[lines - 1][0] != 0:
+			return False
+		return True
+		'''
 		if is_empty(board, self.lines, self.columns):
 			return True
 		return False
+		'''
 
 	def path_cost(self, c, state1, action, state2):
 		return c + 1
