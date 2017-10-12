@@ -197,23 +197,16 @@ def board_remove_group(board, group):
 	return boardcopy
 
 class sg_state:
-	__slots__ = ['board', 'actionstaken']
+	__slots__ = ['board']
 	
 	def __init__(self, board):
 		self.board = board
-		self.actionstaken = []
 
 	def update_board(self, newboard):
 		self.board = newboard
 
 	def get_board(self):
 		return self.board
-
-	def set_actions_taken(self, actions):
-		self.actionstaken = actions
-
-	def get_actions_taken(self):
-		return self.actionstaken
 
 	def __lt__(self, other_sg_state):
 		thisclusters = len(board_find_groups(self.get_board()))
@@ -228,15 +221,6 @@ class same_game(Problem):
 		self.lines = len(board)
 		self.columns = len(board[1])
 		initialstate = sg_state(board)
-		'''
-		emptyboard = []
-		for i in range(self.lines):
-			line = []
-			for j in range(self.columns):
-				line.append(0)
-			emptyboard.append(line)
-		goalstate = sg_state(emptyboard)
-		'''
 		super(same_game, self).__init__(initialstate)
 
 	'''Return the actions that can be executed in the given
@@ -257,10 +241,8 @@ class same_game(Problem):
 	self.actions(state).'''
 	def result(self, state, action):
 		board = state.get_board()
-		clustertoremove = action
-		resultingboard = board_remove_group(board, clustertoremove)
-		newstate = sg_state(resultingboard)
-		return newstate
+		resultingboard = board_remove_group(board, action)
+		return sg_state(resultingboard)
 
 	'''Return True if the state is a goal. The default method compares the
 	state to self.goal or checks for state in self.goal if it is a
@@ -268,23 +250,15 @@ class same_game(Problem):
 	checking against a single self.goal is not enough.'''
 	def goal_test(self, state):
 		board = state.get_board()
-		lines = self.lines
-		columns = self.columns
-		if board[lines - 1][0] != 0:
+		if board[self.lines - 1][0] != 0:
 			return False
 		return True
-		'''
-		if is_empty(board, self.lines, self.columns):
-			return True
-		return False
-		'''
 
 	def path_cost(self, c, state1, action, state2):
 		return c + 1
 
 	def h(self, node):
-		state = node.state
-		board = state.get_board()
+		board = node.state.get_board()
 		coloredballs = 0
 		for i in range(self.lines):
 			for j in range(self.columns):
