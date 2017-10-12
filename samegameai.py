@@ -3,9 +3,6 @@ from search import *
 
 lines = 0
 columns = 0
-initFlag = True
-colorsDict = {}
-
 
 #------------------------------------------------------------------------------#
 #
@@ -229,21 +226,12 @@ class same_game(Problem):
 		self.lines = len(board)
 		self.columns = len(board[1])
 
-		global colorsDict, initFlag
-		initialstate = sg_state(board)
 		emptyboard = []
 		for i in range(self.lines):
 			line = []
 			for j in range(self.columns):
-				if initFlag:
-					# RFE: All these accesses to dictionary might cause program to run slower than intended
-					colorinteger = get_color(board, i, j)
-					colorstr = str(colorinteger)
-					colorsDict.setdefault(colorstr, 0)
-					colorsDict[colorstr] += 1
 				line.append(0)
 			emptyboard.append(line)
-		initFlag = False
 		goalstate = sg_state(emptyboard)
 		super(same_game, self).__init__(initialstate, goalstate)
 
