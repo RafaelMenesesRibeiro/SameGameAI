@@ -219,8 +219,9 @@ class sg_state:
 		return self.actionstaken
 
 	def __lt__(self, other_sg_state):
-		# TODO compares another sg_state with the current one and returns true if this one is less than other
-		pass
+		thisclusters = len(board_find_groups(self.get_board()))
+		otherclusters = len(board_find_groups(other_sg_state.get_board()))
+		return thisclusters < otherclusters
 
 
 class same_game(Problem):
@@ -256,7 +257,7 @@ class same_game(Problem):
 		validclusters = []
 		for cluster in clusters:
 			if len(cluster) >= 2:
-				validclusters.append(cluster)               
+				validclusters.append(cluster)           
 		return validclusters
 
 	'''Return the state that results from executing the given
@@ -291,12 +292,3 @@ class same_game(Problem):
 				if board[i][j] != 0:
 					coloredballs += 1
 		return coloredballs
-
-if __name__ == '__main__':
-	#board = [[1, 2, 1, 2, 1], [2, 1, 2, 1, 2], [1, 2, 1, 2, 1], [2, 1, 2, 1, 2]]
-	#board =[[1, 2, 2, 3, 3], [2, 2, 2, 1, 3], [1, 2, 2, 2, 2], [1, 1, 1, 1, 1]]
-	#board = [[3, 1, 3, 2], [1, 1, 1, 3], [1, 3, 2, 1], [1, 1, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [5, 1, 1, 3], [4, 5, 1, 2]]
-	#board =[[3, 1, 3, 2], [1, 1, 1, 3], [1, 3, 2, 1], [1, 1, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [2, 1, 1, 3], [2, 3, 1, 2]]
-	#board = [[1, 1, 5, 3], [5, 3, 5, 3], [1, 2, 5, 4], [5, 2, 1, 4], [5, 3, 5, 1], [5, 3, 4, 4], [5, 5, 2, 5], [1, 1, 3, 1],[1, 2, 1, 3], [3, 3, 5, 5]]
-	print(depth_first_tree_search(same_game([[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]])).state.board)
-
