@@ -3,6 +3,7 @@ from search import *
 
 lines = 0
 columns = 0
+initFlag = True
 colorsDict = {}
 
 #------------------------------------------------------------------------------#
@@ -254,14 +255,23 @@ class sg_state:
 
 class same_game(Problem):
     def __init__(self, board):
-        global lines, columns
+        global lines, columns, colorsDict, initFlag
+        lines = len(board)
+        columns = len(board[1])
         initialstate = sg_state(board)
         emptyboard = []
         for i in range(lines):
             line = []
             for j in range(columns):
+                if initFlag:
+                    # RFE: All these accesses to dictionary might cause program to run slower than intended
+                    colorinteger = get_color(board, i, j)
+                    colorstr = str(colorinteger)
+                    colorcount = colorsDict.setdefault(colorstr, 0)
+                    colorsDict[colorstr] += 1
                 line.append(0)
             emptyboard.append(line)
+        initFlag = False
         goalstate = sg_state(emptyboard)
         super(same_game, self).__init__(initialstate, goalstate)
 
@@ -308,22 +318,12 @@ class same_game(Problem):
 
 
 if __name__ == '__main__':
-    print('')
     #board = [[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]
     #board = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
     board = [[1, 2, 2, 3, 3], [2, 2, 2, 1, 3], [1, 2, 2, 2, 2], [1, 1, 1, 1, 1]]
-
-    lines = len(board)
-    columns = len(board[1])
-
-    # RFE: All these accesses to dictionary might cause program to run slower than intended
-    for i in range(lines):
-        for j in range(columns):
-            colorinteger = get_color(board, i, j)
-            colorstr = str(colorinteger)
-            colorcount = colorsDict.setdefault(colorstr, 0)
-            colorsDict[colorstr] += colorcount + 1
+    problem = same_game(board)
+    print('')
     for key, value in colorsDict.items():
         print('Color: ', key, ', Count: ', value)
-    problem = same_game(board)
+    print('')
     depth_first_tree_search(problem)
