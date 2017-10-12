@@ -200,16 +200,23 @@ def board_remove_group(board, group):
 	return boardcopy
 
 class sg_state:
-	__slots__ = ['board']
-
+	__slots__ = ['board', 'actionstaken']
+	
 	def __init__(self, board):
 		self.board = board
+		self.actionstaken = []
 
 	def update_board(self, newboard):
 		self.board = newboard
 
 	def get_board(self):
 		return self.board
+
+	def set_actions_taken(self, actions):
+		self.actionstaken = actions
+
+	def get_actions_taken(self):
+		return self.actionstaken
 
 	def __lt__(self, other_sg_state):
 		# TODO compares another sg_state with the current one and returns true if this one is less than other
@@ -220,7 +227,6 @@ class same_game(Problem):
 	def __init__(self, board):
 		self.lines = len(board)
 		self.columns = len(board[1])
-		self.actionstaken = []
 
 		global colorsDict, initFlag
 		initialstate = sg_state(board)
@@ -277,7 +283,14 @@ class same_game(Problem):
 		return c + 1
 
 	def h(self, node):
-		return 0
+		state = node.state
+		board = state.get_board()
+		coloredballs = 0
+		for i in range(self.lines):
+			for j in range(self.columns):
+				if board[i][j] != 0:
+					coloredballs += 1
+		return coloredballs
 
 if __name__ == '__main__':
 	#board = [[1, 2, 1, 2, 1], [2, 1, 2, 1, 2], [1, 2, 1, 2, 1], [2, 1, 2, 1, 2]]
@@ -285,8 +298,5 @@ if __name__ == '__main__':
 	#board = [[3, 1, 3, 2], [1, 1, 1, 3], [1, 3, 2, 1], [1, 1, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [5, 1, 1, 3], [4, 5, 1, 2]]
 	#board =[[3, 1, 3, 2], [1, 1, 1, 3], [1, 3, 2, 1], [1, 1, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [2, 1, 1, 3], [2, 3, 1, 2]]
 	#board = [[1, 1, 5, 3], [5, 3, 5, 3], [1, 2, 5, 4], [5, 2, 1, 4], [5, 3, 5, 1], [5, 3, 4, 4], [5, 5, 2, 5], [1, 1, 3, 1],[1, 2, 1, 3], [3, 3, 5, 5]]
-	board = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
-	problem = same_game(board)
-	#depth_first_tree_search(problem)
 	print(depth_first_tree_search(same_game([[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]])).state.board)
-	
+
