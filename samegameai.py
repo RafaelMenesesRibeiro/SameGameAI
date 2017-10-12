@@ -217,7 +217,7 @@ def board_remove_group(board, group):
 
 class sg_state:
 	__slots__ = ['board']
-	
+
 	def __init__(self, board):
 		self.board = board
 
@@ -232,6 +232,21 @@ class sg_state:
 		otherclusters = len(board_find_groups(other_sg_state.get_board()))
 		return thisclusters < otherclusters
 
+	def cluster_count(self):
+		clusters = 0
+		lines = len(self.board)
+		columns = len(self.board[0])
+		# Creates the matrix that represents if a position has been checked for or has been added to a cluster.
+		# Initiates all to False because no position was visited yet.
+		visited = [[False for _ in range(columns)] for _ in range(lines)]
+		# For each valid (non empty) position on the board, get its cluster.
+		for l in range(lines):
+			for c in range(columns):
+				# Checks if the current position in empty and if it was already visited in a previous BFS.
+				if color(get_color(board, l, c)) and not visited[l][c]:
+					newcluster = root_find_abstract_group(self.board, visited, l, c, lines, columns)
+					clusters +=1
+		return clusters
 
 class same_game(Problem):
 	__slots__ = ['lines', 'columns']
@@ -241,7 +256,7 @@ class same_game(Problem):
 		self.columns = len(board[1])
 		initialstate = sg_state(board)
 		super(same_game, self).__init__(initialstate)
-	
+
 	def actions(self, state):
 		board = state.get_board()
 		return board_find_valid_groups(board)
