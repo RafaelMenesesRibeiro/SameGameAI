@@ -70,15 +70,7 @@ def pos_color(board, p):
 #            ADT Board
 #
 # -----------------------------------------------------------------------------#
-def is_column_empty(board, cindex):
-	global lines
-	if no_color(board[lines - 1][cindex]):
-		return True
-	return False
-
-
-def is_empty(board):
-	global lines, columns
+def is_empty(board, lines, columns):
 	for l in range(lines):
 		for c in range(columns):
 			if board[l][c] != 0:
@@ -207,16 +199,6 @@ def board_remove_group(board, group):
 	boardcopy = concatenate_columns(boardcopy, lines, columns)
 	return boardcopy
 
-
-def to_string(board):
-	global lines, columns
-	for l in range(columns):
-		print('[ ', end='')
-		for c in range(lines):
-			print('{} '.format(board[l][c]), end='')
-		print(']')
-
-
 class sg_state:
 	__slots__ = ['board']
 
@@ -236,14 +218,16 @@ class sg_state:
 
 class same_game(Problem):
 	def __init__(self, board):
-		global lines, columns, colorsDict, initFlag
-		lines = len(board)
-		columns = len(board[1])
+		self.lines = len(board)
+		self.columns = len(board[1])
+		self.actionstaken = []
+
+		global colorsDict, initFlag
 		initialstate = sg_state(board)
 		emptyboard = []
-		for i in range(lines):
+		for i in range(self.lines):
 			line = []
-			for j in range(columns):
+			for j in range(self.columns):
 				if initFlag:
 					# RFE: All these accesses to dictionary might cause program to run slower than intended
 					colorinteger = get_color(board, i, j)
@@ -285,7 +269,7 @@ class same_game(Problem):
 	checking against a single self.goal is not enough.'''
 	def goal_test(self, state):
 		board = state.get_board()
-		if is_empty(board):
+		if is_empty(board, self.lines, self.columns):
 			return True
 		return False
 
@@ -293,33 +277,7 @@ class same_game(Problem):
 		return c + 1
 
 	def h(self, node):
-		state = node.state
-		board = state.get_board()
-		clusterList = board_find_groups()
-		# TODO
-		''' We know the cost of finishing the board must cost LxC or less. If we remove bigger groups of balls first
-		and count each removed ball as costing 1 and consider that costing more is actually costing less, because we
-		want to eventually have no pieces left to remove, then we want to remove the biggest clusters first.
-		However, what we actually want to do is remove the biggest cluster of the color with less balls on the board as
-		long as doing so, leaves two or more balls of that color on the board OR none. As leaving a single ball of color
-		<int>C, would make the puzzle unsolvable. If all possible actions would leave us in unsolvable state, we return
-		that information.
-			The goal is to huge single colored clusters, reducing the number of actual steps needed to finish the
-		algorithm, instead of the actual LxC cost.
-		'''
-		return cost
-
-
-'''
-def astar_search(problem, h=None):
-	"""A* search is best-first graph search with f(n) = g(n)+h(n).
-	You need to specify the h function when you call astar_search, or
-	else in your Problem subclass."""
-	h = memoize(h or problem.h, 'h')
-	return best_first_graph_search(problem, lambda n: n.path_cost + h(n))
-'''
-
-
+		return 0
 
 if __name__ == '__main__':
 	#board = [[1, 2, 1, 2, 1], [2, 1, 2, 1, 2], [1, 2, 1, 2, 1], [2, 1, 2, 1, 2]]
@@ -327,13 +285,8 @@ if __name__ == '__main__':
 	#board = [[3, 1, 3, 2], [1, 1, 1, 3], [1, 3, 2, 1], [1, 1, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [5, 1, 1, 3], [4, 5, 1, 2]]
 	#board =[[3, 1, 3, 2], [1, 1, 1, 3], [1, 3, 2, 1], [1, 1, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [2, 1, 1, 3], [2, 3, 1, 2]]
 	#board = [[1, 1, 5, 3], [5, 3, 5, 3], [1, 2, 5, 4], [5, 2, 1, 4], [5, 3, 5, 1], [5, 3, 4, 4], [5, 5, 2, 5], [1, 1, 3, 1],[1, 2, 1, 3], [3, 3, 5, 5]]
-	#board = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
-	'''
+	board = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
 	problem = same_game(board)
-	print('')
-	for key, value in colorsDict.items():
-		print('Color: ', key, ', Count: ', value)
-	print('')
-	depth_first_tree_search(problem)
-	'''
-	print(sg_state([[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]]).board)
+	#depth_first_tree_search(problem)
+	print(depth_first_tree_search(same_game([[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]])).state.board)
+	
