@@ -119,7 +119,7 @@ def root_find_group(board, visited, rootline, rootcolumn, lines, columns):
 			l = pos_l(pos)
 			c = pos_c(pos)
 			# Checks if the coordinate is not empty and if the coordinate's piece is the same color as the root piece.
-			if not visited[l][c] and eq_colors(rootcolor, get_color(board, l, c)):
+			if not visited[l][c] and rootcolor == get_color(board, l, c):
 				# In case the requirements are met, adds the adjacent piece to the cluster and to the queue
 				cluster.append((l, c))
 				queue.append((l, c))
@@ -145,6 +145,25 @@ def board_find_groups(board):
 				newcluster = root_find_group(board, visited, l, c, lines, columns)
 				newcluster.sort(key=itemgetter(0, 1))
 				clusters.append(newcluster)
+	return clusters
+
+def board_find_valid_groups(board):
+	lines = len(board)
+	columns = len(board[0])
+	clusters = []
+	# Creates the matrix that represents if a position has been checked for or has been added to a cluster.
+	# Initiates all to False because no position was visited yet.
+	visited = [[False for _ in range(columns)] for _ in range(lines)]
+	# For each valid (non empty) position on the board, get its cluster.
+	for l in range(lines):
+		for c in range(columns):
+			# Checks if the current position in empty and if it is, checks if the it was already visited in a previous BFS.
+			if color(get_color(board, l, c)) and not visited[l][c]:
+				# Get the cluster to which the ball in this position belongs to.
+				newcluster = root_find_group(board, visited, l, c, lines, columns)
+				newcluster.sort(key=itemgetter(0, 1))
+				if len(newcluster) >= 2:
+					clusters.append(newcluster)
 	return clusters
 
 
@@ -222,19 +241,10 @@ class same_game(Problem):
 		self.columns = len(board[1])
 		initialstate = sg_state(board)
 		super(same_game, self).__init__(initialstate)
-
-	'''Return the actions that can be executed in the given
-	state. The result would typically be a list, but if there are
-	many actions, consider yielding them one at a time in an
-	iterator, rather than building them all at once.'''
+	
 	def actions(self, state):
 		board = state.get_board()
-		clusters = board_find_groups(board)
-		validclusters = []
-		for cluster in clusters:
-			if len(cluster) >= 2:
-				validclusters.append(cluster)           
-		return validclusters
+		return board_find_valid_groups(board)
 
 	'''Return the state that results from executing the given
 	action in the given state. The action must be one of
