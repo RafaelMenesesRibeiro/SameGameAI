@@ -6,6 +6,7 @@ columns = 0
 initFlag = True
 colorsDict = {}
 
+
 #------------------------------------------------------------------------------#
 #
 #            ADT Color
@@ -174,6 +175,7 @@ def board_find_groups(board):
             if color(get_color(board, l, c)) and not visited[l][c]:
                 # Get the cluster to which the ball in this position belongs to.
                 newcluster = root_find_group(board, visited, l, c)
+                newcluster.sort(key=itemgetter(1, 0), reverse=True)
                 clusters.append(newcluster)
     return clusters
 
@@ -219,7 +221,6 @@ def board_remove_group(board, group):
         boardcopy.append(list(line))
     cluster = group
     # Sorts the cluster by column, from right to left and then by line, from top to bottom.
-    cluster.sort(key=itemgetter(1, 0), reverse=True)
     clusterindex = 0
     while clusterindex < len(cluster):
         clusterindex, boardcopy = concatenate_lines(boardcopy, cluster, clusterindex)
@@ -267,7 +268,7 @@ class same_game(Problem):
                     # RFE: All these accesses to dictionary might cause program to run slower than intended
                     colorinteger = get_color(board, i, j)
                     colorstr = str(colorinteger)
-                    colorcount = colorsDict.setdefault(colorstr, 0)
+                    colorsDict.setdefault(colorstr, 0)
                     colorsDict[colorstr] += 1
                 line.append(0)
             emptyboard.append(line)
@@ -312,14 +313,37 @@ class same_game(Problem):
         return c + 1
 
     def h(self, node):
-        # state = node.state
-        # board = state.get_board()
-        return 
+        state = node.state
+        board = state.get_board()
+        clusterList = board_find_groups()
+        # TODO
+        ''' We know the cost of finishing the board must cost LxC or less. If we remove bigger groups of balls first
+        and count each removed ball as costing 1 and consider that costing more is actually costing less, because we
+        want to eventually have no pieces left to remove, then we want to remove the biggest clusters first.
+        However, what we actually want to do is remove the biggest cluster of the color with less balls on the board as
+        long as doing so, leaves two or more balls of that color on the board OR none. As leaving a single ball of color
+        <int>C, would make the puzzle unsolvable. If all possible actions would leave us in unsolvable state, we return
+        that information.
+            The goal is to huge single colored clusters, reducing the number of actual steps needed to finish the
+        algorithm, instead of the actual LxC cost.
+        '''
+        return cost
+
+
+'''
+def astar_search(problem, h=None):
+    """A* search is best-first graph search with f(n) = g(n)+h(n).
+    You need to specify the h function when you call astar_search, or
+    else in your Problem subclass."""
+    h = memoize(h or problem.h, 'h')
+    return best_first_graph_search(problem, lambda n: n.path_cost + h(n))
+'''
+
 
 
 if __name__ == '__main__':
     #board = [[1, 2, 1, 2, 1], [2, 1, 2, 1, 2], [1, 2, 1, 2, 1], [2, 1, 2, 1, 2]]
-    #board =[[1, 2, 2, 3, 3], [2, 2, 2, 1, 3], [1, 2, 2, 2, 2], [1, 1, 1, 1, 1]]
+    board =[[1, 2, 2, 3, 3], [2, 2, 2, 1, 3], [1, 2, 2, 2, 2], [1, 1, 1, 1, 1]]
     #board = [[3, 1, 3, 2], [1, 1, 1, 3], [1, 3, 2, 1], [1, 1, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [5, 1, 1, 3], [4, 5, 1, 2]]
     #board =[[3, 1, 3, 2], [1, 1, 1, 3], [1, 3, 2, 1], [1, 1, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [2, 1, 1, 3], [2, 3, 1, 2]]
     #board = [[1, 1, 5, 3], [5, 3, 5, 3], [1, 2, 5, 4], [5, 2, 1, 4], [5, 3, 5, 1], [5, 3, 4, 4], [5, 5, 2, 5], [1, 1, 3, 1],[1, 2, 1, 3], [3, 3, 5, 5]]
