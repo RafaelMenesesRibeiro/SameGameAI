@@ -333,11 +333,13 @@ class same_game(Problem):
 	def h(self, node):
 		board = node.state.get_board()
 		coloredballs = 0
-		for i in range(self.lines):
-			for j in range(self.columns):
+
+		for j in range(self.columns):
+			if board[self.lines - 1][j] == 0:
+				continue
+			for i in reversed(range(self.lines)):
 				if board[i][j] != 0:
 					coloredballs += 1
+				else:
+					continue
 		return coloredballs
-
-
-print(depth_first_tree_search(same_game([[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]])).state.board)
