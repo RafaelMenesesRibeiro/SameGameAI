@@ -20,7 +20,6 @@ infinity = float('inf')
 
 # ______________________________________________________________________________
 
-
 class Problem(object):
 
     """The abstract class for a formal problem.  You should subclass
@@ -102,8 +101,11 @@ class Node:
 
     def expand(self, problem):
         """List the nodes reachable in one step from this node."""
-        return [self.child_node(problem, action)
-                for action in problem.actions(self.state)]
+        list = [self.child_node(problem, action) for action in problem.actions(self.state)]
+        return list, len(list)
+
+        #return [self.child_node(problem, action)
+         #       for action in problem.actions(self.state)]
 
     def child_node(self, problem, action):
         """[Figure 3.10]"""
@@ -176,26 +178,24 @@ class SimpleProblemSolvingAgentProgram:
 # ______________________________________________________________________________
 # Uninformed Search algorithms
 
-
 def tree_search(problem, frontier):
+    expanded = 0
+    generated = 0
     """Search through the successors of a problem to find a goal.
     The argument frontier should be an empty queue.
     Don't worry about repeated paths to a state. [Figure 3.7]"""
     frontier.append(Node(problem.initial))
     while frontier:
         node = frontier.pop()
-
-
-
-        s = node.state
-        b = s.get_board()
-        print(b)
-
-
+        expanded += 1
 
         if problem.goal_test(node.state):
+            print('Generated {} nodes. Expanded {} nodes.'.format(generated, expanded))
             return node
-        frontier.extend(node.expand(problem))
+        lista, newones = node.expand(problem)
+        frontier.extend(lista)
+        generated += newones
+    print('Generated {} nodes. Expanded {} nodes.'.format(generated, expanded))
     return None
 
 
@@ -251,6 +251,8 @@ def breadth_first_search(problem):
 
 
 def best_first_graph_search(problem, f):
+    generated = 0
+    expanded = 0
     """Search the nodes with the lowest f scores first.
     You specify the function f(node) that you want to minimize; for example,
     if f is a heuristic estimate to the goal, then we have greedy best
@@ -267,17 +269,22 @@ def best_first_graph_search(problem, f):
     explored = set()
     while frontier:
         node = frontier.pop()
+        expanded += 1
         if problem.goal_test(node.state):
+            print('Generated {} nodes. Expanded {} nodes.'.format(generated, expanded))
             return node
         explored.add(node.state)
-        for child in node.expand(problem):
+        lista, _ = node.expand(problem)
+        for child in lista:
             if child.state not in explored and child not in frontier:
+                generated += 1
                 frontier.append(child)
             elif child in frontier:
                 incumbent = frontier[child]
                 if f(child) < f(incumbent):
                     del frontier[incumbent]
                     frontier.append(child)
+    print('Generated {} nodes. Expanded {} nodes.'.format(generated, expanded))
     return None
 
 

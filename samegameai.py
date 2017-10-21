@@ -1,5 +1,6 @@
 from operator import itemgetter
 from search import *
+import time
 
 infinite = float("inf")
 
@@ -308,4 +309,36 @@ class same_game(Problem):
 				else:
 					continue
 		return coloredballs
+
+
+
+
+def testMethod(method, problem, heuristic=None):
+	tstart = time.time()
+	if heuristic == None:
+		method(problem)
+	else:
+		method(problem, heuristic)
+	tend = time.time()
+	executiontime = tend - tstart
+	print('{} took {} seconds'.format(method, executiontime))
+
+
+
+
+board = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[5,1,1,3],[4,5,1,2]]
+print(board)
+
+
+game = same_game(board)
+method1 = depth_first_tree_search
+method2 = astar_search
+method3 = best_first_graph_search #Greedy search
+testMethod(method1, game)
+testMethod(method2, game, game.h)
+testMethod(method3, game, game.h)
+
+
+
+
 
