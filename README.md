@@ -1,18 +1,25 @@
 # SameGame-AI
-Artificial Intelligence Project #1
 
-### Methods that need to be implemented in class "Problem"
-* path_cost - (Revision only) - function that calculates the cost of the path
-* h - heuristic function
+[University Project]
+
+[3rd Year - 1st Semester]
+
+Objective:
+- Learn severall methods used to search an objective state in Artifical Intelligence
+- Learn how to think of heuristics to help solve the problems with A* algorithm
+- Compare the severall search methods (DFS, BFS, A*, and others) and decide which is the best for the given circumstance
 
 
-### Ideias for comparing function and for heuristic function
-* For comparing function: order clusters from right to left, bottom to top, when
-they are found instead of when they are removed. This will allows to choose the
-clusters to remove when they draw on astar function, prioritizing the ones that
-need less concatenations, by choosing the one with highest column first
+## Input
 
-* For the heuristic function we count the number of pieces of each color, when 
-the program starts, save those values in the state and then try to remove smaller
-clusters first in order to generate bigger clusters that can be removed at once
-decreasing probability of shifts while making bigger clusters of other colors.
+To modify the board, in samegameai.py line 329, add a board with the same format as the example below:
+
+```board = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[5,1,1,3],[4,5,1,2]]```
+
+Each sub array is a board line.
+
+There are severall search methods available in search.py.
+
+## Run
+
+Run samegameai.py
