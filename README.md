@@ -1,4 +1,4 @@
-# SameGame-AI
+# SameGame AI
 
 [University Project]
 
